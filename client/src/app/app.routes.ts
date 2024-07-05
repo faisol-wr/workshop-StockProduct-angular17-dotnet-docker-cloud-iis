@@ -14,22 +14,37 @@ export const routes: Routes = [
       {
         path: '',
         component: HomeComponent,
+        data: {
+          title: 'หน้าหลัก',
+        },
       },
       {
         path: 'about',
         component: AboutComponent,
+        data: {
+          title: 'เกี่ยวกับเรา',
+        },
       },
       {
         path: 'contact',
         component: ContactComponent,
+        data: {
+          title: 'ติดต่อเรา',
+        },
       },
       {
         path: 'login',
         component: LoginComponent,
+        data: {
+          title: 'เข้าสู่ระบบ',
+        },
       },
       {
         path: 'register',
         component: RegisterComponent,
+        data: {
+          title: 'ลงทะเบียน',
+        },
       },
     ],
   },
