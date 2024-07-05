@@ -7,6 +7,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { Meta } from '@angular/platform-browser';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -33,12 +34,29 @@ export class LoginComponent {
   @ViewChild('emailInput') emailInput!: ElementRef;
 
   private fb = inject(FormBuilder);
+  private meta = inject(Meta);
 
   ngOnInit() {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
     });
+
+    this.meta.addTags([
+      {
+        name: 'title',
+        content: 'เข้าสู่ระบบ | Stock Management',
+      },
+      {
+        name: 'description',
+        content:
+          'Login Stock Management is a web applicantion that allows users to manage their stock inventory.',
+      },
+      {
+        name: 'keywords',
+        content: 'login, stock, management, inventory, web application',
+      },
+    ]);
   }
 
   togglePasswordVisibility() {
