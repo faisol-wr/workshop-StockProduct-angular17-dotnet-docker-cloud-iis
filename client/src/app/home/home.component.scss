@@ -1,0 +1,13 @@
+@media (max-width: 1200px) {
+    img {
+        width: 100% !important;
+        height: auto !important;
+    }
+}
+
+@media (max-width: 768px) {
+    img {
+        height: 300px !important;
+        object-fit: cover;
+    }
+}
