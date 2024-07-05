@@ -1,4 +1,5 @@
-import { Component, inject } from '@angular/core';
+import { NgOptimizedImage } from '@angular/common';
+import { Component, ElementRef, inject, ViewChild } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -6,11 +7,12 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule, FormsModule],
+  imports: [ReactiveFormsModule, FormsModule, NgOptimizedImage],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })
@@ -19,12 +21,16 @@ export class LoginComponent {
   loginForm!: FormGroup;
   // สร้างตัวแปรไว้เช็คว่า submit form หรือยัง
   submitted = false;
+  // สร้างตัวแปรไว้ซ่อน/แสดง password
+  hide = true;
 
   // ตัวแปรสำหรับผูกกับฟอร์ม
   userLogin = {
     email: '',
     password: '',
   };
+
+  @ViewChild('emailInput') emailInput!: ElementRef;
 
   private fb = inject(FormBuilder);
 
@@ -35,12 +41,22 @@ export class LoginComponent {
     });
   }
 
+  togglePasswordVisibility() {
+    this.hide = !this.hide;
+  }
+
   submitLogin() {
     this.submitted = true;
     if (this.loginForm.invalid) {
       return;
     } else {
-      alert('Login success')
+      // alert('Login success');
+      Swal.fire({
+        title: 'เข้าสู่ระบบสำเร็จ',
+        text: 'ยินดีต้อนรับเข้าสู่ระบบ Stock Management',
+        icon: 'success',
+        confirmButtonText: 'OK',
+      });
       this.userLogin.email = this.loginForm.value.email;
       this.userLogin.password = this.loginForm.value.password;
     }
@@ -49,5 +65,7 @@ export class LoginComponent {
   resetForm() {
     this.submitted = false;
     this.loginForm.reset();
+    // ให้ focus ที่ input email
+    this.emailInput.nativeElement.focus();
   }
 }
