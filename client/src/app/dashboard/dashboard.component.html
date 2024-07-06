@@ -1,0 +1,51 @@
+<main class="col-sm-12 col-md-12 col-lg-12 mt-3">
+    <div class="pt-3 pb-2 mb-3">
+      <div class="row">
+        <div class="col-md-6">
+          <h3>Dashboard</h3>
+        </div>
+        <div class="col-md-6 text-end">
+          <a href="#add" 
+            class="btn btn-success me-5" data-bs-toggle="modal" data-bs-target="#addProductModal">+ Add Product
+          </a>
+        </div>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Image</th>
+              <th scope="col">Name</th>
+              <th scope="col">Category</th>
+              <th scope="col">Price</th>
+              <th scope="col">Qty</th>
+              <th scope="col">Rate</th>
+              <th scope="col" style="width: 200px;">Manage</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for(product of products; track product.id){
+              <tr>
+                  <td>{{ product.id }}</td>
+                  <td><img src="{{ product.image }}" alt="product" width="50"></td>
+                  <td>{{ product.title }}</td>
+                  <td>{{ product.category }}</td>
+                  <td>{{ product.price }}</td>
+                  <td>{{ product.rating.count }}</td>
+                  <td>{{ product.rating.rate }}</td>
+                  <td style="width: 200px;">
+                    <a href="#edit" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editProductModal">Edit</a> &nbsp;
+                    <a href="#delete" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteProductModal">Delete</a>
+                  </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="8" class="text-center">No data found</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+</main>
