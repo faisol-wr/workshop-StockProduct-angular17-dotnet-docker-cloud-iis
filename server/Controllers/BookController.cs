@@ -35,5 +35,12 @@ namespace ControllerServer
             return Ok("Hello World");
         }
 
+        [HttpGet("Query1")]
+        public IActionResult Query1()
+        {
+            var value = HttpContext.Request.Query["value"].ToString();
+            var age = HttpContext.Request.Query["age"].ToString();
+            return Ok(new { value, age });
+        }
     }
 }
