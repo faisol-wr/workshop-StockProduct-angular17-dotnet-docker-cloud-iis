@@ -42,5 +42,11 @@ namespace ControllerServer
             var age = HttpContext.Request.Query["age"].ToString();
             return Ok(new { value, age });
         }
+
+        [HttpGet("Query2")]
+        public IActionResult Query2([FromQuery] string value)
+        {
+            return Ok(value);
+        }
     }
 }
