@@ -21,5 +21,14 @@ namespace ControllerServer
         {
             return Ok(new { message = "info", name });
         }
+
+        [HttpGet]
+        [Route("MultiParam/{name}/{age}")]
+        public IActionResult MutiParam(string name, int age) 
+        {
+            return Ok(new { message = "MultiParam", name = name, age = age});
+        }
+
+
     }
 }
