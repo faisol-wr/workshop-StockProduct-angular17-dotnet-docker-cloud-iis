@@ -29,6 +29,11 @@ namespace ControllerServer
             return Ok(new { message = "MultiParam", name = name, age = age});
         }
 
+        [HttpGet("GetValue")]
+        public IActionResult GetValue()
+        {
+            return Ok("Hello World");
+        }
 
     }
 }
