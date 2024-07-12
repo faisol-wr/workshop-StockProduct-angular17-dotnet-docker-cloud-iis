@@ -61,5 +61,48 @@ namespace ControllerServer
                 return StatusCode(500, ex.Message);
             }
         }
+
+        [HttpPut("[action]")]
+        public IActionResult Update(TbBookModel model)
+        {
+            try
+            {
+                using (NpgsqlConnection conn = new Connect().CreateConnection())
+                {
+                    NpgsqlCommand cmd = conn.CreateCommand();
+                    cmd.CommandText = "UPDATE tb_book SET name = @name, price = @price WHERE id = @id";
+                    cmd.Parameters.AddWithValue("name", model.name!);
+                    cmd.Parameters.AddWithValue("price", model.price);
+                    cmd.Parameters.AddWithValue("id", model.id);
+                    cmd.ExecuteNonQuery();
+
+                    return Ok();
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpDelete("[action]/{id}")]
+        public IActionResult Delete(int id) {
+             try
+            {
+                using (NpgsqlConnection conn = new Connect().CreateConnection())
+                {
+                    NpgsqlCommand cmd = conn.CreateCommand();
+                    cmd.CommandText = "DELETE FROM tb_book WHERE id = @id";
+                    cmd.Parameters.AddWithValue("id", id);
+                    cmd.ExecuteNonQuery();
+
+                    return Ok();
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
     }
 }
