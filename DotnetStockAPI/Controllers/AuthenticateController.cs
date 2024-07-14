@@ -214,49 +214,6 @@ public class AuthenticateController : ControllerBase
         });
     }
 
-    // Login for User
-    // Post api/authenticate/login-user
-    [HttpPost("login")]
-    public async Task<ActionResult> Login([FromBody] LoginModel model)
-    {
-
-        var user = await _userManager.FindByNameAsync(model.Username!);
-
-        // ถ้า login สำเร็จ
-        if (user != null && await _userManager.CheckPasswordAsync(user, model.Password!))
-        {
-            var userRoles = await _userManager.GetRolesAsync(user);
-
-            var authClaims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, user.UserName!),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-            };
-
-            foreach (var userRole in userRoles)
-            {
-                authClaims.Add(new Claim(ClaimTypes.Role, userRole));
-            }
-
-            var token = GetToken(authClaims);
-
-            return Ok(new
-            {
-                token = new JwtSecurityTokenHandler().WriteToken(token),
-                expiration = token.ValidTo,
-                userData = new
-                {
-                    userName = user.UserName,
-                    email = user.Email,
-                    roles = userRoles
-                }
-            });
-        }
-
-        // ถ้า login ไม่สำเร็จ
-        return Unauthorized();
-    }
-
     // Register for Admin
     // Post api/authenticate/register-admin
     [HttpPost]
@@ -339,6 +296,49 @@ public class AuthenticateController : ControllerBase
         });
     }
 
+    // Login for User
+    // Post api/authenticate/login-user
+    [HttpPost("login")]
+    public async Task<ActionResult> Login([FromBody] LoginModel model)
+    {
+
+        var user = await _userManager.FindByNameAsync(model.Username!);
+
+        // ถ้า login สำเร็จ
+        if (user != null && await _userManager.CheckPasswordAsync(user, model.Password!))
+        {
+            var userRoles = await _userManager.GetRolesAsync(user);
+
+            var authClaims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, user.UserName!),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            };
+
+            foreach (var userRole in userRoles)
+            {
+                authClaims.Add(new Claim(ClaimTypes.Role, userRole));
+            }
+
+            var token = GetToken(authClaims);
+
+            return Ok(new
+            {
+                token = new JwtSecurityTokenHandler().WriteToken(token),
+                expiration = token.ValidTo,
+                userData = new
+                {
+                    userName = user.UserName,
+                    email = user.Email,
+                    roles = userRoles
+                }
+            });
+        }
+
+        // ถ้า login ไม่สำเร็จ
+        return Unauthorized();
+    }
+
 
     // ฟังก์ชันสร้าง Token
     private JwtSecurityToken GetToken(List<Claim> authClaims)
@@ -361,4 +361,21 @@ public class AuthenticateController : ControllerBase
         return token;
     }
 
+    // Logout
+    [HttpPost]
+    [Route("logout")]
+    public async Task<IActionResult> Logout()
+    {
+        var userName = User.Identity?.Name;
+        if (userName != null)
+        {
+            var user = await _userManager.FindByNameAsync(userName);
+            if (user != null)
+            {
+                await _userManager.UpdateSecurityStampAsync(user);
+                return Ok(new ResponseModel { Status = "Success", Message = "User logged out!" });
+            }
+        }
+        return Ok();
+    }
 }
