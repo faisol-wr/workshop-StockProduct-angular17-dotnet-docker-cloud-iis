@@ -116,9 +116,13 @@ public class AuthenticateController : ControllerBase
             await _roleManager.CreateAsync(new IdentityRole(UserRolesModel.Manager));
         }
 
-        if (await _roleManager.RoleExistsAsync(UserRolesModel.User))
+        if (!await _roleManager.RoleExistsAsync(UserRolesModel.User))
         {
             await _roleManager.CreateAsync(new IdentityRole(UserRolesModel.User));
+            await _userManager.AddToRoleAsync(user, UserRolesModel.User);
+        }
+        else
+        {
             await _userManager.AddToRoleAsync(user, UserRolesModel.User);
         }
 
@@ -127,6 +131,70 @@ public class AuthenticateController : ControllerBase
             Status = "Success",
             Message = "User registered successfully"
         });
+    }
+
+    // Login for User
+    // Post api/authenticate/login-user
+    [HttpPost("login")]
+    public async Task<ActionResult> Login([FromBody] LoginModel model)
+    {
+
+        var user = await _userManager.FindByNameAsync(model.Username!);
+
+        // ถ้า login สำเร็จ
+        if (user != null && await _userManager.CheckPasswordAsync(user, model.Password!))
+        {
+            var userRoles = await _userManager.GetRolesAsync(user);
+
+            var authClaims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, user.UserName!),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            };
+
+            foreach (var userRole in userRoles)
+            {
+                authClaims.Add(new Claim(ClaimTypes.Role, userRole));
+            }
+
+            var token = GetToken(authClaims);
+
+            return Ok(new
+            {
+                token = new JwtSecurityTokenHandler().WriteToken(token),
+                expiration = token.ValidTo,
+                userData = new
+                {
+                    userName = user.UserName,
+                    email = user.Email,
+                    roles = userRoles
+                }
+            });
+        }
+
+        // ถ้า login ไม่สำเร็จ
+        return Unauthorized();
+    }
+
+    // ฟังก์ชันสร้าง Token
+    private JwtSecurityToken GetToken(List<Claim> authClaims)
+    {
+        var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]!));
+
+        var timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time"); // Windows time zone ID
+
+        // Get the current time in Bangkok time zone
+        var currentTime = TimeZoneInfo.ConvertTime(DateTime.UtcNow, timeZoneInfo);
+
+        var token = new JwtSecurityToken(
+            issuer: _configuration["JWT:ValidIssuer"],
+            audience: _configuration["JWT:ValidAudience"],
+            expires: currentTime.AddHours(3),
+            claims: authClaims,
+            signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
+        );
+
+        return token;
     }
 
 }
