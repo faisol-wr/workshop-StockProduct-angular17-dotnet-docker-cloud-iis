@@ -95,8 +95,28 @@ public class ProductController : ControllerBase
     public ActionResult<product> GetProduct(int id)
     {
         // LINQ สำหรับการดึงข้อมูลจากตาราง Products ตาม ID
-        var product = _context.products.Find(id);
+        // var product = _context.products.Find(id);
 
+        // แบบเชื่อมกับตารางอื่น products เชื่อมกับ categories
+        var product = _context.products
+        .Join(
+            _context.categories,
+            p => p.categoryid,
+            c => c.categoryid,
+            (p, c) => new
+            {
+                p.productid,
+                p.productname,
+                p.unitprice,
+                p.unitinstock,
+                p.productpicture,
+                p.categoryid,
+                p.createddate,
+                p.modifieddate,
+                c.categoryname
+            }
+        )
+        .FirstOrDefault(p => p.productid == id);
         // ถ้าไม่พบข้อมูล
         if (product == null)
         {
