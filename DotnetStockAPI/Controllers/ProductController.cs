@@ -16,9 +16,15 @@ public class ProductController : ControllerBase
     // สร้าง Object ของ ApplicationDbContext
     private readonly ApplicationDbContext _context;
 
-    public ProductController(ApplicationDbContext context)
+    // IWebHostEnvironment คืออะไร
+    // ContentRootPath: เส้นทางไปยังโฟลเดอร์รากของเว็บแอปพลิเคชัน
+    // WebRootPath: เส้นทางไปยังโฟลเดอร์ wwwroot ของเว็บแอปพลิเคชัน
+    private readonly IWebHostEnvironment _env;
+
+    public ProductController(ApplicationDbContext context, IWebHostEnvironment env)
     {
         _context = context;
+        _env = env;
     }
 
     // CRUD Product
@@ -130,10 +136,39 @@ public class ProductController : ControllerBase
     // ฟังก์ชันสำหรับการเพิ่มข้อมูล Product
     // POST /api/Product
     [HttpPost]
-    public ActionResult<product> CreateProduct([FromBody] product product)
+    public async Task<ActionResult<product>> CreateProduct([FromForm] product product, IFormFile? image)
     {
         // เพิ่มข้อมูลลงในตาราง Products
         _context.products.Add(product); // insert into product values (...)
+
+        // ถ้ามีการอัพโหลดไฟล์
+        if (image != null)
+        {
+            // กำหนดชื่อไฟล์รูปภาพใหม่
+            string fileName = Guid.NewGuid().ToString() + Path.GetExtension(image.FileName);
+
+            // กำหนดเส้นทางไปยังโฟลเดอร์ uploads
+            string uploadFolder = Path.Combine(_env.WebRootPath, "uploads");
+
+            // ตรวจสอบว่าโฟลเดอร์ uploads มีหรือไม่
+            if (!Directory.Exists(uploadFolder))
+            {
+                Directory.CreateDirectory(uploadFolder);
+            }
+
+            using (var fileStream = new FileStream(Path.Combine(uploadFolder, fileName), FileMode.Create))
+            {
+                await image.CopyToAsync(fileStream);
+            }
+
+            // บันทึกชื่อไฟล์รูปภาพลงในฐานข้อมูล
+            product.productpicture = fileName;
+        }
+        else
+        {
+            product.productpicture = "noimg.jpg";
+        }
+
         _context.SaveChanges(); // commit
 
         // ส่งข้อมูลกลับไปให้ Client เป็น JSON
