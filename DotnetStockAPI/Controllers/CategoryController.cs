@@ -10,6 +10,7 @@ namespace DotnetStockAPI.Controllers;
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
+[EnableCors("MultipleOrigins")]
 public class CategoryController : ControllerBase
 {
 

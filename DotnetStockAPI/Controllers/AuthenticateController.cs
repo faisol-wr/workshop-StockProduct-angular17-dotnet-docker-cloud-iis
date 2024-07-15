@@ -10,6 +10,7 @@ namespace DotnetStockAPI.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[EnableCors("MultipleOrigins")]
 public class AuthenticateController : ControllerBase
 {
     // สร้าง Object ของ ApplicationDbContext
