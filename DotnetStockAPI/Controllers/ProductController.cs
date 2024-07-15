@@ -175,33 +175,62 @@ public class ProductController : ControllerBase
         return Ok(product);
     }
 
-    // ฟังก์ชันสำหรัลการแก้ไขข้อมูลสินค้า
-    // PUT /api/Product/1
-    [HttpPut]
-    public ActionResult<product> UpdateProduct(int id, [FromBody] product product)
+    // ฟังก์ชันสำหรับการแก้ไขข้อมูลสินค้า
+    // PUT: /api/Product/1
+    [HttpPut("{id}")]
+    public async Task<ActionResult<product>> UpdateProduct(int id, [FromForm] product product, IFormFile? image)
     {
-        // ค้นหาข้อมูล Product ตาม ID
-        var productData = _context.products.Find(id); // select * from product where id = 1
+        // ดึงข้อมูลสินค้าตาม id
+        var existingProduct = _context.products.FirstOrDefault(p => p.productid == id);
 
-        // ถ้าไม่พบข้อมูลให้ return NotFound
-        if (productData == null)
+        // ถ้าไม่พบข้อมูล
+        if (existingProduct == null)
         {
             return NotFound();
         }
 
-        // แก้ไขข้อมูล product
-        productData.productname = product.productname;
-        productData.unitprice = product.unitprice;
-        productData.unitinstock = product.unitinstock;
-        productData.productpicture = product.productpicture;
-        productData.categoryid = product.categoryid;
-        productData.modifieddate = product.modifieddate;
+        // แก้ไขข้อมูล
+        existingProduct.productname = product.productname;
+        existingProduct.unitprice = product.unitprice;
+        existingProduct.unitinstock = product.unitinstock;
+        existingProduct.categoryid = product.categoryid;
+        existingProduct.modifieddate = product.modifieddate;
 
-        // commit
+        // ตรวจสอบว่ามีการอัพโหลดไฟล์รูปภาพหรือไม่
+        if (image != null)
+        {
+            // กำหนดชื่อไฟล์รูปภาพใหม่
+            string fileName = Guid.NewGuid().ToString() + Path.GetExtension(image.FileName);
+
+            // กำหนดเส้นทางไปยังโฟลเดอร์ uploads
+            string uploadFolder = Path.Combine(_env.WebRootPath, "uploads");
+
+            // ตรวจสอบว่าโฟลเดอร์ uploads มีหรือไม่
+            if (!Directory.Exists(uploadFolder))
+            {
+                Directory.CreateDirectory(uploadFolder);
+            }
+
+            using (var fileStream = new FileStream(Path.Combine(uploadFolder, fileName), FileMode.Create))
+            {
+                await image.CopyToAsync(fileStream);
+            }
+
+            // ลบไฟล์รูปภาพเดิม ถ้ามีการอัพโหลดรูปภาพใหม่ และรูปภาพเดิมไม่ใช่ noimg.jpg
+            if (existingProduct.productpicture != "noimg.jpg")
+            {
+                System.IO.File.Delete(Path.Combine(uploadFolder, existingProduct.productpicture!));
+            }
+
+            // บันทึกชื่อไฟล์รูปภาพลงในฐานข้อมูล
+            existingProduct.productpicture = fileName;
+        }
+
+        // บันทึกการแก้ไขข้อมูล
         _context.SaveChanges();
 
-        // สั่งข้อมูลกลับไปให้ Client เป็น JSON
-        return Ok(productData);
+        // ส่งข้อมูลกลับไปให้ Client เป็น JSON
+        return Ok(existingProduct);
     }
 
     // ฟังก์ชันสำหรัลการลบข้อมูล Product
