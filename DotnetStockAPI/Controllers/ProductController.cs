@@ -8,7 +8,7 @@ namespace DotnetStockAPI.Controllers;
 
 // Multiple Roles
 // [Authorize(Roles = UserRolesModel.Admin + "," + UserRolesModel.Manager)]
-// [Authorize]
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class ProductController : ControllerBase
