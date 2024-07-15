@@ -233,22 +233,34 @@ public class ProductController : ControllerBase
         return Ok(existingProduct);
     }
 
-    // ฟังก์ชันสำหรัลการลบข้อมูล Product
+    // ฟังก์ชันสำหรับการลบข้อมูลสินค้า
     // DELETE /api/Product/1
     [HttpDelete("{id}")]
     public ActionResult<product> DeleteProduct(int id)
     {
-        // ค้นหาข้อมูล Product ตาม ID
-        var product = _context.products.Find(id); // select *from Product where id = 1
+        // ค้นหาข้อมูลจากตาราง Products ตาม ID
+        var product = _context.products.Find(id);
 
-        // ถ้าไม่พบข้อมูลให้ return NotFound
+        // ถ้าไม่พบข้อมูล
         if (product == null)
         {
             return NotFound();
         }
 
-        // ลบข้อมูล Product
-        _context.products.Remove(product); // delete from Product where id = 1
+        // ตรวจสอบว่ามีไฟล์รูปภาพหรือไม่
+        if (product.productpicture != "noimg.jpg")
+        {
+            // string uploadFolder = Path.Combine(_env.ContentRootPath, "uploads");
+            string uploadFolder = Path.Combine(_env.WebRootPath, "uploads");
+
+            // ลบไฟล์รูปภาพ
+            System.IO.File.Delete(Path.Combine(uploadFolder, product.productpicture!));
+        }
+
+        // ลบข้อมูล
+        _context.products.Remove(product); // delete from products where id = 1
+
+        // บันทึกการลบข้อมูล
         _context.SaveChanges(); // commit
 
         // ส่งข้อมูลกลับไปให้ Client เป็น JSON
