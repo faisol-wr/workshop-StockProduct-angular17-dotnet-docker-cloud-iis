@@ -71,7 +71,7 @@ export class LoginComponent implements OnInit {
   constructor(
     private router: Router,
     private formBuilder: FormBuilder,
-    private meta: Meta,
+    private meta: Meta
   ) {}
 
   ngOnInit() {
@@ -83,8 +83,8 @@ export class LoginComponent implements OnInit {
 
     // กำหนดค่าให้กับ Form
     this.loginForm = this.formBuilder.group({
-      username: ['', [Validators.required, Validators.minLength(3)]], // iamsamit
-      password: ['', [Validators.required, Validators.minLength(8)]], // Samit@1234
+      username: ['', [Validators.required, Validators.minLength(3)]],
+      password: ['', [Validators.required, Validators.minLength(8)]],
     });
   }
 
