@@ -922,11 +922,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Leaning\\workshop\\angular 17 with .NET 8\\workshop-angular17-dotnet\\server\\server.csproj",
+      "projectUniqueName": "D:\\Leaning\\workshop\\angular 17 with .NET 8\\workshop-angular17-dotnet\\learning-server-dotnet\\server.csproj",
       "projectName": "server",
-      "projectPath": "D:\\Leaning\\workshop\\angular 17 with .NET 8\\workshop-angular17-dotnet\\server\\server.csproj",
+      "projectPath": "D:\\Leaning\\workshop\\angular 17 with .NET 8\\workshop-angular17-dotnet\\learning-server-dotnet\\server.csproj",
       "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
-      "outputPath": "D:\\Leaning\\workshop\\angular 17 with .NET 8\\workshop-angular17-dotnet\\server\\obj\\",
+      "outputPath": "D:\\Leaning\\workshop\\angular 17 with .NET 8\\workshop-angular17-dotnet\\learning-server-dotnet\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config"

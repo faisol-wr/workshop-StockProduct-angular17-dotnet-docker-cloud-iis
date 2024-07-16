@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "5W3XLajIeHA=",
+  "dgSpecHash": "RRL9DKfm7HU=",
   "success": true,
-  "projectFilePath": "D:\\Leaning\\workshop\\angular 17 with .NET 8\\workshop-angular17-dotnet\\server\\server.csproj",
+  "projectFilePath": "D:\\Leaning\\workshop\\angular 17 with .NET 8\\workshop-angular17-dotnet\\learning-server-dotnet\\server.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\User\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\8.0.6\\microsoft.aspnetcore.authentication.jwtbearer.8.0.6.nupkg.sha512",
     "C:\\Users\\User\\.nuget\\packages\\microsoft.extensions.apidescription.server\\6.0.5\\microsoft.extensions.apidescription.server.6.0.5.nupkg.sha512",
