@@ -27,7 +27,7 @@ export class AppComponent {
   title = 'angular-stock'
 
   isExpanded = true
-  isLoggedIn = true
+  isLoggedIn = false
 
   @ViewChild('sidenav', { static: true }) sidenav: any
 
