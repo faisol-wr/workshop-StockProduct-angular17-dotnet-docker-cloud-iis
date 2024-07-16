@@ -1,26 +1,35 @@
-<mat-card>
-  <mat-card-header>
-    <mat-card-title>
-      <h1 class="text-blue-600 underline">Material Design</h1>
-    </mat-card-title>
-  </mat-card-header>
-  <mat-card-content>
-    <h1>นี้คือภาษาไทย</h1>
-    <p>Material Design is a design language developed by Google in 2014.
-      Expanding on the "card" motifs that debuted in Google Now, Material Design
-      uses more grid-based layouts, responsive animations and transitions,
-      padding, and depth effects such as lighting and shadows.</p>
+<mat-sidenav-container autosize>
 
-    <button mat-raised-button color="primary">Primary</button>
-    <button mat-fab color="accent">
-      <mat-icon>add</mat-icon>
-    </button>
-  </mat-card-content>
+  @if (isLoggedIn) {
+    <mat-sidenav
+      #sidenav
+      mode="side"
+      opened="isExpanded"
+      [ngStyle]="{ width: isExpanded ? '270px' : '65px' }"
+    style="
+      background-size: cover !important;
+      background: url('../assets/images/bgmenu.jpg') no-repeat center;
+    "
+      >
+      <!-- Menu -->
+      <app-menu
+        [isOpened]="isExpanded"
+        (sidenavToggle)="isExpanded = !isExpanded"
+      ></app-menu>
+    </mat-sidenav>
+  }
 
-  <mat-card-actions>
-    <button mat-button>LIKE</button>
-    <button mat-button>SHARE</button>
-  </mat-card-actions>
-</mat-card>
+  <mat-sidenav-content class="mat-sidenav-content">
+    <!-- Header -->
+    @if (isLoggedIn) {
+      <app-header
+        [isOpened]="isExpanded"
+        (sidenavToggle)="isExpanded = !isExpanded"
+      ></app-header>
+    }
 
-<router-outlet />
+    <!-- Page Content -->
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
+
+</mat-sidenav-container>
