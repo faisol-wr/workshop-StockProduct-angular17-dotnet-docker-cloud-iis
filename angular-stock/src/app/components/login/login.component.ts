@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import {
   FormGroup,
@@ -23,6 +23,7 @@ import {
   MatCardActions,
 } from '@angular/material/card';
 import { Meta } from '@angular/platform-browser';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-login',
@@ -68,11 +69,10 @@ export class LoginComponent implements OnInit {
   // สำหรับซ่อนแสดง password
   hide = true;
 
-  constructor(
-    private router: Router,
-    private formBuilder: FormBuilder,
-    private meta: Meta
-  ) {}
+  private userService = inject(UserService);
+  private router = inject(Router);
+  private formBuilder = inject(FormBuilder);
+  private meta = inject(Meta);
 
   ngOnInit() {
     // กำหนด Meta Tag description
@@ -98,6 +98,16 @@ export class LoginComponent implements OnInit {
       this.userData.password = this.loginForm.value.password;
 
       console.log(this.userData);
+
+      // เรียกใช้งาน Service สำหรับ Login
+      this.userService.login(this.userData).subscribe({
+        next: (result) => {
+          console.log(result);
+        },
+        error: (err) => {
+          console.log(err);
+        },
+      });
     }
   }
 
