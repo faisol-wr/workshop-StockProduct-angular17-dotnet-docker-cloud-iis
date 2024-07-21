@@ -330,7 +330,7 @@ public class AuthenticateController : ControllerBase
                 expiration = token.ValidTo,
                 userData = new
                 {
-                    userName = user.UserName,
+                    username = user.UserName,
                     email = user.Email,
                     roles = userRoles
                 }
