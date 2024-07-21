@@ -1,13 +1,13 @@
-import { Component, OnInit } from '@angular/core'
-import { RouterLink } from '@angular/router'
-import { Subject } from 'rxjs'
+import { Component, OnInit, inject, ViewChild } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { Subject } from 'rxjs';
 import {
   MatCard,
   MatCardHeader,
   MatCardTitle,
   MatCardSubtitle,
   MatCardContent,
-} from '@angular/material/card'
+} from '@angular/material/card';
 import {
   MatTable,
   MatColumnDef,
@@ -18,15 +18,22 @@ import {
   MatHeaderRowDef,
   MatHeaderRow,
   MatRowDef,
-  MatRow
-} from '@angular/material/table'
-import { DecimalPipe, SlicePipe } from '@angular/common'
-import { MatIcon } from '@angular/material/icon'
-import { MatInput } from '@angular/material/input'
-import { MatFormField, MatSuffix } from '@angular/material/form-field'
-import { FormsModule } from '@angular/forms'
-import { MatPaginator } from '@angular/material/paginator'
-import { MatSort, MatSortHeader } from '@angular/material/sort'
+  MatRow,
+  MatTableDataSource,
+} from '@angular/material/table';
+import { DecimalPipe, SlicePipe } from '@angular/common';
+import { MatIcon } from '@angular/material/icon';
+import { MatInput } from '@angular/material/input';
+import { MatFormField, MatSuffix } from '@angular/material/form-field';
+import { FormsModule } from '@angular/forms';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort, MatSortHeader } from '@angular/material/sort';
+
+// Import ProductService
+import { ProductService } from '../../services/product.service';
+
+// Import Environment
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-stock',
@@ -59,55 +66,95 @@ import { MatSort, MatSortHeader } from '@angular/material/sort'
     MatInput,
     FormsModule,
     DecimalPipe,
-    SlicePipe
-  ]
+    SlicePipe,
+  ],
 })
 export class StockComponent implements OnInit {
+  private productService = inject(ProductService);
 
-  displayedColumns = ['productId', 'image', 'name', 'price', 'stock', 'action']
+  // Image URL
+  imageUrl = environment.dotnet_api_url_image;
+  dataSource = new MatTableDataSource<Record<string, string>>();
+  searchValue = '';
+  searchTerm = new Subject<string>();
 
-  // sample datasource
-  dataSource = {
-    data: [
-      { productId: 1, image: 'image1', name: 'name1', price: 100, stock: 10 },
-      { productId: 2, image: 'image2', name: 'name2', price: 200, stock: 20 },
-      { productId: 3, image: 'image3', name: 'name3', price: 300, stock: 30 },
-      { productId: 4, image: 'image4', name: 'name4', price: 400, stock: 40 },
-      { productId: 5, image: 'image5', name: 'name5', price: 500, stock: 50 },
-      { productId: 6, image: 'image6', name: 'name6', price: 600, stock: 60 },
-      { productId: 7, image: 'image7', name: 'name7', price: 700, stock: 70 },
-      { productId: 8, image: 'image8', name: 'name8', price: 800, stock: 80 },
-      { productId: 9, image: 'image9', name: 'name9', price: 900, stock: 90 },
-      { productId: 10, image: 'image10', name: 'name10', price: 1000, stock: 100 }
-    ],
-    filter: ''
+  page = 1;
+  limit = 100;
+  selectedCategory = '';
+  searchQuery = '';
+
+  // Columns for Table
+  displayedColumns = [
+    'productID',
+    'productPicture',
+    'productName',
+    'unitPrice',
+    'unitInStock',
+    'categoryName',
+    'action',
+  ];
+
+  // Pagination
+  @ViewChild(MatPaginator, { static: false }) paginator!: MatPaginator;
+  @ViewChild(MatSort, { static: false }) sort!: MatSort;
+
+  // Method getProducts
+  getProducts() {
+    this.productService
+      .getAllProducts(
+        this.page,
+        this.limit,
+        this.selectedCategory,
+        this.searchQuery
+      )
+      .subscribe({
+        next: (result) => {
+          console.log(result);
+          this.dataSource.data = result.products;
+        },
+        error: (error) => {
+          console.error(error);
+        },
+      });
   }
 
-  searchValue = ''
-  searchTerm = new Subject<string>()
-
-  constructor() {}
-  ngOnInit(): void {}
-
-  async doFilter(event: any) {
-    // do local
-    // this.dataSource.filter = event.target.value.trim();
-    // do remote
-    // this.dataSource.data = await lastValueFrom(
-    //   this.rest.getProductByKeyword(event.target.value)
-    // );
+  // Method ngOnInit
+  ngOnInit(): void {
+    // ดึงข้อมูลสินค้า
+    this.getProducts();
   }
 
+  // Method ngAfterViewInit
+  ngAfterViewInit() {
+    this.dataSource.sort = this.sort;
+    this.dataSource.paginator = this.paginator;
+  }
+
+  // Method Delete Product
   onClickDelete(row: any) {
-    // do remote
-    // this.dataSource.data = await lastValueFrom(
-    //   this.rest.deleteProduct(this.selectedProduct)
-    // );
+    // do something
   }
 
+  // Method filter product
+  async doFilter(event: any) {
+    // // do something
+    this.dataSource.filter = event.target.value.trim();
+  }
+
+  // Method clear search
   clearSearch() {
     this.searchValue = '';
     this.searchTerm.next('');
+    this.dataSource.filter = '';
   }
 
+  // Method Export to PDF
+  onClickExportPDF() {
+    // do something
+  }
+
+  // Method Export to Excel
+  onClickExportCSV() {
+    // do something
+  }
 }
