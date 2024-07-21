@@ -24,6 +24,9 @@ import {
 } from '@angular/material/card';
 import { Meta } from '@angular/platform-browser';
 import { UserService } from '../../services/user.service';
+import { AuthService } from '../../services/auth.service';
+import { MatDialog } from '@angular/material/dialog';
+import { AlertDialogComponent } from '../alert-dialog/alert-dialog.component';
 
 @Component({
   selector: 'app-login',
@@ -73,6 +76,8 @@ export class LoginComponent implements OnInit {
   private router = inject(Router);
   private formBuilder = inject(FormBuilder);
   private meta = inject(Meta);
+  private auth = inject(AuthService);
+  private dialog = inject(MatDialog);
 
   ngOnInit() {
     // กำหนด Meta Tag description
@@ -86,6 +91,11 @@ export class LoginComponent implements OnInit {
       username: ['', [Validators.required, Validators.minLength(3)]],
       password: ['', [Validators.required, Validators.minLength(8)]],
     });
+
+    // เช็คว่าถ้า Login อยู่แล้วให้ Redirect ไปหน้า Dashboard
+    if (this.auth.isLoggedIn()) {
+      window.location.href = '/dashboard';
+    }
   }
 
   // ฟังก์ชัน Submit สำหรับ Login
@@ -97,15 +107,51 @@ export class LoginComponent implements OnInit {
       this.userData.username = this.loginForm.value.username;
       this.userData.password = this.loginForm.value.password;
 
-      console.log(this.userData);
-
       // เรียกใช้งาน Service สำหรับ Login
       this.userService.login(this.userData).subscribe({
-        next: (result) => {
-          console.log(result);
+        next: (data: any) => {
+          if (data.token) {
+            // แสดง dialog login สำเร็จ
+            this.dialog.open(AlertDialogComponent, {
+              data: {
+                title: 'Login Success',
+                icon: 'check_circle',
+                iconColor: 'green',
+                subtitle: 'Welcom to our website',
+              },
+            });
+
+            // เก็บค่าลงตัวแปร userLogin
+            this.userLogin = {
+              username: data.userData.username,
+              email: data.userData.email,
+              role: data.userData.roles[0],
+              token: data.token,
+            };
+
+            // เก็บข้อมูลผู้ใช้งานลง cookie
+            this.auth.setUser(this.userLogin);
+
+            // ส่งไปหน้า Home
+            // delay 2 วินาที
+            setTimeout(() => {
+              // Redirect ไปหน้า backend
+              window.location.href = '/dashboard';
+            }, 2000);
+          }
         },
         error: (err) => {
           console.log(err);
+          // แสดง dialog login ไม่สำเร็จ
+          this.dialog.open(AlertDialogComponent, {
+            data: {
+              title: 'มีข้อผิดพลาด',
+              icon: 'error',
+              iconColor: 'red',
+              subtitle: 'เข้าสู่ระบบไม่ถูกต้อง',
+            },
+            disableClose: true,
+          });
         },
       });
     }
