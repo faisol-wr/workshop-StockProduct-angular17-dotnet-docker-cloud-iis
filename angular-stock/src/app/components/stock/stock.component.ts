@@ -34,6 +34,10 @@ import { ProductService } from '../../services/product.service';
 
 // Import Environment
 import { environment } from '../../../environments/environment';
+import {
+  MatButton,
+  MatIconButton,
+} from '@angular/material/button';
 
 @Component({
   selector: 'app-stock',
@@ -67,6 +71,8 @@ import { environment } from '../../../environments/environment';
     FormsModule,
     DecimalPipe,
     SlicePipe,
+    MatIconButton,
+    MatButton,
   ],
 })
 export class StockComponent implements OnInit {
