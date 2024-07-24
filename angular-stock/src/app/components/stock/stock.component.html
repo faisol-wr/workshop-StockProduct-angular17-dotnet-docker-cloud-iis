@@ -131,7 +131,8 @@
               (click)="onClickEdit(row)">edit</mat-icon>&nbsp;&nbsp;&nbsp;
 
             <mat-icon
-              class="!text-2xl text-red-700 cursor-pointer">delete</mat-icon>
+              class="!text-2xl text-red-700 cursor-pointer"
+              (click)="onClickDelete(row.productid)">delete</mat-icon>
 
           </td>
         </ng-container>
