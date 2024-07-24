@@ -37,6 +37,7 @@ import { environment } from '../../../environments/environment';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { CreateProductDialogComponent } from '../create-product-dialog/create-product-dialog.component';
+import { EditProductDialogComponent } from '../edit-product-dialog/edit-product-dialog.component';
 
 @Component({
   selector: 'app-stock',
@@ -145,6 +146,20 @@ export class StockComponent implements OnInit {
 
     dialogAddRef.componentInstance.productCreated.subscribe((created) => {
       if (created) {
+        this.getProducts();
+      }
+    });
+  }
+
+  // Method onClickEdit
+  async onClickEdit(product: any) {
+    const dialogEditRef = await this.dialog.open(EditProductDialogComponent, {
+      width: '600px',
+      data: product,
+    });
+
+    dialogEditRef.componentInstance.productUpdated.subscribe((updated) => {
+      if (updated) {
         this.getProducts();
       }
     });

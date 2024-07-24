@@ -10,8 +10,7 @@
       <div>
         <!-- Add Product Button -->
         <button mat-raised-button class="mt-4 mr-4 !bg-blue-700 !text-white"
-        (click)="onClickAddProduct()"
-        >
+          (click)="onClickAddProduct()">
           <mat-icon class="!text-sm">add</mat-icon> Add Product
         </button>
 
@@ -128,7 +127,8 @@
             style="text-align: center; width: 200px">
 
             <mat-icon
-              class="!text-2xl text-yellow-700 cursor-pointer">edit</mat-icon>&nbsp;&nbsp;&nbsp;
+              class="!text-2xl text-yellow-700 cursor-pointer"
+              (click)="onClickEdit(row)">edit</mat-icon>&nbsp;&nbsp;&nbsp;
 
             <mat-icon
               class="!text-2xl text-red-700 cursor-pointer">delete</mat-icon>
