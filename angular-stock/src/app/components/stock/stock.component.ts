@@ -142,6 +142,12 @@ export class StockComponent implements OnInit {
     const dialogAddRef = await this.dialog.open(CreateProductDialogComponent, {
       width: `600px`,
     });
+
+    dialogAddRef.componentInstance.productCreated.subscribe((created) => {
+      if (created) {
+        this.getProducts();
+      }
+    });
   }
 
   // Method Delete Product
