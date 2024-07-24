@@ -15,12 +15,14 @@
         </button>
 
         <!-- Export PDF Button -->
-        <button mat-raised-button class="mt-4 mr-4 !bg-red-600 !text-white">
+        <button mat-raised-button class="mt-4 mr-4 !bg-red-600 !text-white"
+          (click)="onClickExportPDF()">
           <mat-icon class="!text-sm">picture_as_pdf</mat-icon> Export PDF
         </button>
 
         <!-- Export CSV Button -->
-        <button mat-raised-button class="mt-4 mr-4 !bg-green-600 !text-white">
+        <button mat-raised-button class="mt-4 mr-4 !bg-green-600 !text-white"
+        (click)="onClickExportCSV()">
           <mat-icon class="!text-sm">table_chart</mat-icon> Export CSV
         </button>
 
