@@ -34,10 +34,9 @@ import { ProductService } from '../../services/product.service';
 
 // Import Environment
 import { environment } from '../../../environments/environment';
-import {
-  MatButton,
-  MatIconButton,
-} from '@angular/material/button';
+import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
+import { CreateProductDialogComponent } from '../create-product-dialog/create-product-dialog.component';
 
 @Component({
   selector: 'app-stock',
@@ -77,6 +76,7 @@ import {
 })
 export class StockComponent implements OnInit {
   private productService = inject(ProductService);
+  private dialog = inject(MatDialog);
 
   // Image URL
   imageUrl = environment.dotnet_api_url_image;
@@ -134,6 +134,14 @@ export class StockComponent implements OnInit {
   ngAfterViewInit() {
     this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
+  }
+
+  // Method onClickAddProduct
+  async onClickAddProduct() {
+    // เรียกเปิด dialog สำหรับเพิ่มสินค้า
+    const dialogAddRef = await this.dialog.open(CreateProductDialogComponent, {
+      width: `600px`,
+    });
   }
 
   // Method Delete Product
