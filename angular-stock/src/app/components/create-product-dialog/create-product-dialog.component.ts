@@ -126,7 +126,7 @@ export class CreateProductDialogComponent {
   private formBuilder = inject(FormBuilder);
   public dialogRef = inject(MatDialogRef<CreateProductDialogComponent>);
   private dialog = inject(MatDialog);
-  private http = inject(ProductService);
+  private productService = inject(ProductService);
 
   // Form
   formProduct!: FormGroup;
@@ -217,7 +217,7 @@ export class CreateProductDialogComponent {
       }
 
       // ส่งข้อมูลไปยัง API
-      this.http.createProduct(formData).subscribe({
+      this.productService.createProduct(formData).subscribe({
         next: (data) => {
           console.log(data);
           // แสดง dialog
