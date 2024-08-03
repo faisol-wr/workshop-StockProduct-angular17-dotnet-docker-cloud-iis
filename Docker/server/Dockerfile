@@ -6,8 +6,8 @@ EXPOSE 8081
 ENV ASPNETCORE_URLS=http://+:8081
 
 # On Render cloud
-# EXPOSE 80
-# EXPOSE 443
+EXPOSE 80
+EXPOSE 443
 
 USER app
 FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0 AS build
