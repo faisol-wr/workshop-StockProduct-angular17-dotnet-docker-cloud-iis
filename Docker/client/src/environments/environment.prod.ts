@@ -1,7 +1,7 @@
 export const environment = {
   production: true,
-  dotnet_api_url: 'http://localhost:8081/api/',
-  dotnet_api_url_image: 'http://localhost:8081/uploads/',
+  dotnet_api_url: 'https://workshop-angular17-dotnet-1.onrender.com/api/',
+  dotnet_api_url_image: 'https://workshop-angular17-dotnet-1.onrender.com/uploads/',
   base_url: '',
   token: '',
   version: '1.0',
