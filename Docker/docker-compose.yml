@@ -40,7 +40,7 @@ services:
     container_name: angularapp_container
     build: client/
     ports:
-      - "8080:80"
+      - "4300:80"
     depends_on:
       - dotnetapi
     restart: always
